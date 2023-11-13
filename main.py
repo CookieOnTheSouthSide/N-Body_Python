@@ -3,6 +3,7 @@ from math import sqrt, atan2, sin, cos
 from random import randint
 
 import pygame
+from pygame.math import Vector2
 """
 Next Implementation: 3d
 """
@@ -17,17 +18,14 @@ class Particle:
                  velocity: list[float, float] = (0, 0)):
         self.x_pos = position[0]
         self.y_pos = position[1]
-        self.velocity = velocity
+        self.velocity = Vector2(velocity)
 
     def calculate_velocity(self, center_x: int | float = 0, center_y: int | float = 0, center_mass: int | float = 0):
         distance = sqrt(((center_x - self.x_pos)**2) + ((center_y - self.y_pos)**2))
         force_gravity = (center_mass * self.MASS / distance) * self.GRAVITATIONAL_CONSTANT
-        angle = atan2(center_y - self.y_pos, center_x - self.x_pos)
-        dx = cos(angle)*force_gravity*10
-        dy = sin(angle)*force_gravity*10
-
-        self.velocity[0] += dx*400000000
-        self.velocity[1] += dy*400000000
+        direction = Vector2(center_y - self.y_pos, center_x - self.x_pos).normalize() * force_gravity * 40000000
+ 
+        self.velocity += direction
 
     def update(self):
         self.x_pos += self.velocity[0]
