@@ -1,5 +1,5 @@
 from typing import Final
-from math import sqrt, atan2, sin, cos
+from math import sqrt
 from random import randint
 
 import pygame
@@ -12,20 +12,20 @@ Next Implementation: 3d
 class Particle:
     MASS: Final[int] = 10
     SIZE: Final[int] = 4
-    GRAVITATIONAL_CONSTANT: Final[int] = 6.673 * (10 ** -11)
+    GRAVITATIONAL_CONSTANT: Final[float] = 6.673 * (10 ** -11)
 
-    def __init__(self, position: list[int, int] = (0, 0),
-                 velocity: list[float, float] = (0, 0)):
-        self.x_pos = position[0]
-        self.y_pos = position[1]
+    def __init__(self, position: tuple[int, int] = (0, 0),
+                 velocity: tuple[float, float] = (0, 0)):
+        self.pos = Vector2(pos)
         self.velocity = Vector2(velocity)
 
-    def calculate_velocity(self, center_x: int | float = 0, center_y: int | float = 0, center_mass: int | float = 0):
-        distance = sqrt(((center_x - self.x_pos)**2) + ((center_y - self.y_pos)**2))
-        force_gravity = (center_mass * self.MASS / distance) * self.GRAVITATIONAL_CONSTANT
-        direction = Vector2(center_y - self.y_pos, center_x - self.x_pos).normalize() * force_gravity * 40000000
+    def calculate_velocity(self, center_pos: Vector2 = 0, center_mass: int | float = 0):
+        direction = (center_pos - self.pos)
+        force_gravity = (center_mass * self.MASS / distance.magnitude()) * self.GRAVITATIONAL_CONSTANT
+        norm_factor = 1/distance
+        direction_normalized = (direction*norm_factor).normalize() * force_gravity * 40000000
  
-        self.velocity += direction
+        self.velocity += direction_normalized
 
     def update(self):
         self.x_pos += self.velocity[0]
